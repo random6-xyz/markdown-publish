@@ -1,18 +1,27 @@
+use std::{fs, io::Error};
 use pulldown_cmark::{html, Parser};
+use config::{Config, FileFormat, File};
+use lazy_static::lazy_static;
 use rocket::{
-    build,
-    data::{Data, ToByteUnit},
-    get,
-    http::Status,
-    post,
     request::{FromRequest, Outcome, Request},
+    data::{Data, ToByteUnit},
     response::content,
+    http::Status,
     routes,
+    build,
+    post,
+    get,
 };
-use std::fs;
-use std::io::Error;
 
-const APIKEY: &str = "d1089bdfd3e1e1d95f022b6680e0a1327cc2d361f2e87c6d0aef41dbf388064e";
+lazy_static! {
+    static ref APIKEY: String = {
+        let builder = Config::builder()
+        .add_source(File::new("config/settings", FileFormat::Toml));
+    
+        let config = builder.build().expect("No `config.toml` file");
+        config.get_string("api_key").expect("No name api_key in config.toml").to_owned()
+    };
+}
 
 #[allow(dead_code)]
 struct ApiKey<'r>(&'r str);
@@ -29,7 +38,7 @@ impl<'r> FromRequest<'r> for ApiKey<'r> {
 
     async fn from_request(req: &'r Request<'_>) -> Outcome<Self, Self::Error> {
         fn is_valid(key: &str) -> bool {
-            key == APIKEY
+            key == APIKEY.as_str()
         }
 
         match req.headers().get_one("x-api-key") {
@@ -121,7 +130,7 @@ fn rocket() -> _ {
 fn setup() -> Result<(), Error> {
     fs::create_dir_all("./markdown")?;
     fs::create_dir_all("./html")?;
-
+    
     Ok(())
 }
 
