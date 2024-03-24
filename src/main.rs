@@ -119,7 +119,7 @@ fn rocket() -> _ {
 }
 
 fn setup() -> Result<(), Error> {
-    fs::create_dir_all("./makrdown")?;
+    fs::create_dir_all("./markdown")?;
     fs::create_dir_all("./html")?;
 
     Ok(())
