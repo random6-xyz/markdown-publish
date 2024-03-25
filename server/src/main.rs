@@ -1,25 +1,27 @@
-use std::{fs, io::Error};
-use pulldown_cmark::{html, Parser};
-use config::{Config, FileFormat, File};
+use config::{Config, File, FileFormat};
 use lazy_static::lazy_static;
+use pulldown_cmark::{html, Parser};
 use rocket::{
-    request::{FromRequest, Outcome, Request},
-    data::{Data, ToByteUnit},
-    response::content,
-    http::Status,
-    routes,
     build,
-    post,
+    data::{Data, ToByteUnit},
     get,
+    http::Status,
+    post,
+    request::{FromRequest, Outcome, Request},
+    response::content,
+    routes,
 };
+use std::{fs, io::Error};
 
 lazy_static! {
     static ref APIKEY: String = {
-        let builder = Config::builder()
-        .add_source(File::new("config/settings", FileFormat::Toml));
-    
+        let builder = Config::builder().add_source(File::new("config/settings", FileFormat::Toml));
+
         let config = builder.build().expect("No `config.toml` file");
-        config.get_string("api_key").expect("No name api_key in config.toml").to_owned()
+        config
+            .get_string("api_key")
+            .expect("No name api_key in config.toml")
+            .to_owned()
     };
 }
 
@@ -130,7 +132,7 @@ fn rocket() -> _ {
 fn setup() -> Result<(), Error> {
     fs::create_dir_all("./markdown")?;
     fs::create_dir_all("./html")?;
-    
+
     Ok(())
 }
 
