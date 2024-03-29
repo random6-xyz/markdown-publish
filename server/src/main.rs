@@ -10,8 +10,9 @@ use rocket::{
     request::{FromRequest, Outcome, Request},
     response::content,
     routes,
+    serde::json::Json,
 };
-use std::{fs, io::Error};
+use std::{collections::HashMap, fs, io::Error};
 
 lazy_static! {
     static ref APIKEY: String = {
@@ -83,7 +84,7 @@ fn delete(_key: ApiKey<'_>, file_name: String) -> Status {
         Err(_) => return Status::new(422),
         Ok(_) => {
             match fs::remove_file(format!("./html/{}", file_name)) {
-                Err(_) => return Status::new(422),
+                Err(_) => return Status::new(200),
                 Ok(_) => return Status::new(200),
             };
         }
@@ -91,22 +92,18 @@ fn delete(_key: ApiKey<'_>, file_name: String) -> Status {
 }
 
 #[get("/upload_list")]
-fn setting(_key: ApiKey<'_>) -> content::RawHtml<String> {
+fn setting(_key: ApiKey<'_>) -> Json<HashMap<usize, String>> {
     let mut list_dir: Vec<String> = Vec::new();
     for file in fs::read_dir("./markdown").unwrap() {
         list_dir.push(file.unwrap().file_name().into_string().unwrap());
     }
 
-    let result = list_dir
-        .iter()
-        .map(|x| format!("<li>{}</li>", x))
-        .collect::<Vec<String>>()
-        .join("\n");
+    let mut hashmap: HashMap<usize, String> = HashMap::new();
+    for (idx, file_name) in list_dir.iter().enumerate() {
+        hashmap.insert(idx, file_name.clone());
+    }
 
-    content::RawHtml(format!(
-        r#"<!DOCTYPE html><html><body><ul>{}</ul></body></html>"#,
-        result
-    ))
+    Json(hashmap)
 }
 
 #[get("/publish/<file_path>")]

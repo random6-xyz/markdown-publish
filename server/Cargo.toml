@@ -10,7 +10,7 @@ name = "markdown_publish_server"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 [dependencies]
 pulldown-cmark = "0.10.0"
-rocket = "0.5.0"
+rocket = { version = "0.5.0", features = ["json"] }
 config = "0.14.0"
 lazy_static = "1.4.0"
 
