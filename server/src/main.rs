@@ -18,10 +18,10 @@ lazy_static! {
     static ref APIKEY: String = {
         let builder = Config::builder().add_source(File::new("config/settings", FileFormat::Toml));
 
-        let config = builder.build().expect("No `config.toml` file");
+        let config = builder.build().expect("No `config/settings.toml` file");
         config
-            .get_string("api_key")
-            .expect("No name api_key in config.toml")
+            .get_string("apikey")
+            .expect("No name api_key in config/settings.toml")
             .to_owned()
     };
 }
@@ -80,10 +80,10 @@ fn delete(_key: ApiKey<'_>, file_name: String) -> Status {
         return Status::new(422);
     }
 
-    match fs::remove_file(format!("./markdown/{}", file_name)) {
+    match fs::remove_file(format!("./markdown/{}.md", file_name)) {
         Err(_) => return Status::new(422),
         Ok(_) => {
-            match fs::remove_file(format!("./html/{}", file_name)) {
+            match fs::remove_file(format!("./html/{}.htmls", file_name)) {
                 Err(_) => return Status::new(200),
                 Ok(_) => return Status::new(200),
             };
@@ -147,7 +147,7 @@ fn save_html_to_file(file_name: &str, html: String) -> Result<(), Error> {
 }
 
 fn parse_md_to_html(file_name: &str) -> String {
-    let md = fs::read_to_string(format!("./markdown/{}", file_name)).expect("no file found");
+    let md = fs::read_to_string(format!("./markdown/{}.md", file_name)).expect("no file found");
     let parser = Parser::new(&md);
 
     let mut html = String::new();
