@@ -16,12 +16,22 @@ use std::{collections::HashMap, fs, io::Error};
 
 lazy_static! {
     static ref APIKEY: String = {
-        let builder = Config::builder().add_source(File::new("config/settings", FileFormat::Toml));
+        let builder = Config::builder().add_source(File::new(
+            format!(
+                "{}{}",
+                dirs::home_dir().expect("No home directory.").display(),
+                "/.config/markdown-publish-server/setting.toml"
+            )
+            .as_str(),
+            FileFormat::Toml,
+        ));
 
-        let config = builder.build().expect("No `config/settings.toml` file");
+        let config = builder
+            .build()
+            .expect("No `$HOEM/.config/markdown-publish-server/setting.toml` file");
         config
             .get_string("apikey")
-            .expect("No name api_key in config/settings.toml")
+            .expect("No name api_key in `$HOEM/.config/markdown-publish-server/setting.toml`")
             .to_owned()
     };
 }

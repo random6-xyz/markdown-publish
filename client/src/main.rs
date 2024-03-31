@@ -52,7 +52,7 @@ lazy_static! {
             format!(
                 "{}{}",
                 dirs::home_dir().expect("No home directory.").display(),
-                "/.config/markdown-publish-server/setting.toml"
+                "/.config/markdown-publish-client/setting.toml"
             )
             .as_str(),
             config::FileFormat::Toml,
@@ -60,10 +60,10 @@ lazy_static! {
 
         let config = builder
             .build()
-            .expect("No `$HOEM/.config/markdown-publish-server/setting.toml` file");
+            .expect("No `$HOEM/.config/markdown-publish-client/setting.toml` file");
         config
             .get_string("apikey")
-            .expect("No name api_key in `$HOEM/.config/markdown-publish-server/setting.toml`")
+            .expect("No name api_key in `$HOEM/.config/markdown-publish-client/setting.toml`")
             .to_owned()
     };
     static ref IPADDRESS: String = {
@@ -71,7 +71,7 @@ lazy_static! {
             format!(
                 "{}{}",
                 dirs::home_dir().expect("No home directory.").display(),
-                "/.config/markdown-publish-server/setting.toml"
+                "/.config/markdown-publish-client/setting.toml"
             )
             .as_str(),
             config::FileFormat::Toml,
@@ -79,10 +79,10 @@ lazy_static! {
 
         let config = builder
             .build()
-            .expect("No `$HOEM/.config/markdown-publish-server/setting.toml` file");
+            .expect("No `$HOEM/.config/markdown-publish-client/setting.toml` file");
         config
             .get_string("ipaddress")
-            .expect("No name api_key in `$HOEM/.config/markdown-publish-server/setting.toml`")
+            .expect("No name api_key in `$HOEM/.config/markdown-publish-client/setting.toml`")
             .to_owned()
     };
 }

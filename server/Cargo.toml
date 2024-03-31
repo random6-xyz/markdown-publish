@@ -13,6 +13,7 @@ pulldown-cmark = "0.10.0"
 rocket = { version = "0.5.0", features = ["json"] }
 config = "0.14.0"
 lazy_static = "1.4.0"
+dirs = "5.0.1"
 
 [dev-dependencies]
 reqwest = "0.12.1"
